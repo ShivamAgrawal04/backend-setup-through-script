@@ -113,3 +113,10 @@ This project is licensed under the MIT License.
 ---
 
 🎉 **Happy Coding!** 🚀
+
+```sh
+git add .
+git commit -m "message"
+npm version patch
+npm publish --access public
+```
