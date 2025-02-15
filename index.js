@@ -200,7 +200,8 @@ async function updatePackageJson() {
     packageJson.type = "module";
     packageJson.scripts = {
       ...packageJson.scripts,
-      dev: "nodemon server.js",
+      dev: "nodemon src/server.js",
+      start: "node src/server.js",
     };
 
     await fs.writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
@@ -214,7 +215,8 @@ async function installDependencies() {
   return new Promise((resolve, reject) => {
     console.log("📦 Installing dependencies...");
     exec(
-      `cd ${projectPath} && npm install express dotenv jsonwebtoken cors mongoose bcrypt cookie-parser nodemon`,
+      `npm install express dotenv jsonwebtoken cors mongoose bcrypt cookie-parser nodemon`,
+      { cwd: projectPath },
       async (error) => {
         if (error) {
           console.error("❌ Error installing dependencies:", error);
