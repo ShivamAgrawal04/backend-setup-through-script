@@ -43,7 +43,7 @@ if (!PORT) console.error("❌ Port is not specified in .env file");
 
 // Start server
 app.listen(PORT, () => {
-  console.log(\`🚀 Server running on port \${PORT}\`);
+  console.log(\`🚀 Server running on port http://localhost:\${PORT}\`);
 });`,
 
   ".env": `PORT=4000
@@ -78,7 +78,7 @@ router.post("/login", loginUser);
 export default router;`,
   "controllers/authController.js": `
 // import User from "../models/User.js";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 // User Registration
@@ -177,7 +177,10 @@ async function ensurePackageJson() {
           name: path.basename(projectPath),
           version: "1.0.0",
           main: "server.js",
-          scripts: { dev: "nodemon server.js" },
+          scripts: {
+            start: "node src/server.js",
+            dev: "nodemon src/server.js",
+          },
           dependencies: {},
           type: "module",
         },
