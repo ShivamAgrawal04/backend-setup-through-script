@@ -248,8 +248,8 @@ async function setupProject() {
 
     console.log("\n🎉 Setup Complete! Run the following commands to start:\n");
     if (!isCurrentDir) console.log(`  cd ${projectName}`);
-    console.log("  cd src");
-    console.log("  npm run dev\n");
+    console.log("  npm start For Node\n");
+    console.log("  npm run dev For Nodemon\n");
   } catch (err) {
     console.error("❌ Setup failed:", err);
   }
