@@ -64,6 +64,9 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
+app.get("/", (req, res) => {
+  res.send("Hello from the server!\n This is Home Page");
+  });
 app.use("/api/auth", authRoutes);
 
 export default app;`,
