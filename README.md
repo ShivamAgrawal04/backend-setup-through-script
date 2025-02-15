@@ -18,10 +18,13 @@ npx shiv-backend-setup@latest
 
 This tool creates a folder structure with some basic files and code needed to set up the backend.
 
-update the npx
-first update git repo then update npx using the following command
+## Updating the Package
 
+To update the package and publish a new version, follow these steps:
+
+```sh
 git add .
 git commit -m "message"
 npm version patch
 npm publish --access public
+```
