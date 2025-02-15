@@ -1,30 +1,115 @@
-# backend-structure
+# Express.js Project Setup Script
 
-A CLI tool to generate a backend structure for Express projects.
+## 🚀 Overview
 
-## Installation
+This script automates the setup of an Express.js project with essential dependencies and folder structure. It simplifies project initialization, installs necessary packages, and ensures a clean environment.
 
-```sh
-npm install -g shiv-backend-setup@latest
+## 📁 Project Structure
+
+After running the script, your project will have the following structure:
+
+```
+project-name/
+│-- src/
+│   │-- config/
+│   │   ├── db.js
+│   │-- controllers/
+│   │   ├── authController.js
+│   │-- middlewares/
+│   │-- models/
+│   │-- routes/
+│   │   ├── authRoutes.js
+│   │-- utils/
+│   ├── app.js
+│   ├── server.js
+│-- .gitignore
+│-- .env
+│-- package.json
 ```
 
-## Usage
+## 🛠️ Features
 
-You can also use the project directly with npx:
+- Automatically creates necessary folders (`src/config`, `src/controllers`, etc.).
+- Generates essential files (`server.js`, `app.js`, `.env`, `db.js`).
+- Initializes `package.json` (if not present) and sets up scripts.
+- Installs required dependencies.
+- Adds `.gitignore` to exclude `node_modules` and `.env`.
+
+## 📌 Prerequisites
+
+- Node.js (Latest LTS recommended)
+- npm installed
+
+## ⚡ Installation & Usage
+
+### **Step 1: Run the setup script**
 
 ```sh
-npx shiv-backend-setup@latest
+npx create-express-app project-name
 ```
 
-This tool creates a folder structure with some basic files and code needed to set up the backend.
+_Replace `project-name` with your desired project folder name._
 
-## Updating the Package
-
-To update the package and publish a new version, follow these steps:
+### **Step 2: Navigate into the project folder**
 
 ```sh
-git add .
-git commit -m "message"
-npm version patch
-npm publish --access public
+cd project-name
 ```
+
+### **Step 3: Start the server**
+
+- **Run with Node.js:**
+  ```sh
+  npm start
+  ```
+- **Run with Nodemon (for development):**
+  ```sh
+  npm run dev
+  ```
+
+## 📦 Installed Dependencies
+
+| Package       | Purpose                         |
+| ------------- | ------------------------------- |
+| express       | Backend framework               |
+| dotenv        | Environment variable management |
+| mongoose      | MongoDB ODM                     |
+| jsonwebtoken  | Authentication (JWT)            |
+| bcrypt        | Password hashing                |
+| cookie-parser | Cookie handling                 |
+| cors          | Cross-Origin Resource Sharing   |
+| nodemon       | Auto-restart for development    |
+
+## 📝 Environment Variables (.env)
+
+```sh
+PORT=4000
+MONGO_URI=mongodb://localhost:27017/
+JWT_SECRET=your_jwt_secret
+```
+
+## 🤖 API Routes
+
+### **Auth Routes** (`/api/auth`)
+
+| Method | Route       | Description       |
+| ------ | ----------- | ----------------- |
+| POST   | `/register` | User registration |
+| POST   | `/login`    | User login        |
+
+## 🛠️ Contributing
+
+1. Fork the repository.
+2. Clone the forked repository.
+3. Create a new branch (`git checkout -b feature-branch`).
+4. Commit your changes (`git commit -m "Added new feature"`).
+5. Push to the branch (`git push origin feature-branch`).
+6. Open a Pull Request.
+
+## 📜 License
+
+This project is licensed under the MIT License.
+
+---
+
+🎉 **Happy Coding!** 🚀

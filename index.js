@@ -167,6 +167,19 @@ async function createProjectFiles() {
 }
 
 // Function to create package.json if not exists
+async function createGitIgnoreFile() {
+  const gitIgnorePath = path.join(projectPath, ".gitignore");
+  try {
+    await fs.access(gitIgnorePath);
+  } catch {
+    console.log("📄 Creating .gitignore");
+    const gitIgnoreContent = `.env
+node_modules
+`;
+    await fs.writeFile(gitIgnorePath, gitIgnoreContent, "utf8");
+  }
+}
+
 async function ensurePackageJson() {
   const packageJsonPath = path.join(projectPath, "package.json");
   try {
@@ -222,8 +235,8 @@ async function installDependencies() {
       { cwd: projectPath },
       async (error) => {
         if (error) {
-          console.error("❌ Error installing dependencies:", error);
-          reject(error);
+          console.error("❌ Error installing dependencies:", error.message);
+          reject(new Error(error.message));
         } else {
           console.log("✅ Dependencies installed successfully!");
           await updatePackageJson(); // Update package.json after dependencies are installed
@@ -250,11 +263,12 @@ async function setupProject() {
     await ensurePackageJson();
     await createProjectFiles();
     await installDependencies();
+    await createGitIgnoreFile();
 
     console.log("\n🎉 Setup Complete! Run the following commands to start:\n");
     if (!isCurrentDir) console.log(`  cd ${projectName}`);
-    console.log("  npm start For Node\n");
-    console.log("  npm run dev For Nodemon\n");
+    console.log("  npm start with Node\n");
+    console.log("  npm run dev with Nodemon\n");
   } catch (err) {
     console.error("❌ Setup failed:", err);
   }
