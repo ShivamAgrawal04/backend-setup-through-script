@@ -65,7 +65,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.get("/", (req, res) => {
-  res.send("Hello from the server!\n This is Home Page");
+  res.send("Hello Developer");
   });
 app.use("/api/auth", authRoutes);
 
