@@ -77,7 +77,7 @@ router.post("/login", loginUser);
 
 export default router;`,
   "controllers/authController.js": `
-import User from "../models/User.js";
+// import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -245,6 +245,7 @@ async function setupProject() {
 
     console.log("\n🎉 Setup Complete! Run the following commands to start:\n");
     if (!isCurrentDir) console.log(`  cd ${projectName}`);
+    console.log("  cd src");
     console.log("  npm run dev\n");
   } catch (err) {
     console.error("❌ Setup failed:", err);

@@ -9,7 +9,8 @@
   },
   "dependencies": {},
   "scripts": {
-    "start": "node index.js "
+    "start": "node index.js ",
+    "dev": "npx nodemon server.js || node server.js"
   },
   "keywords": [
     "express",
