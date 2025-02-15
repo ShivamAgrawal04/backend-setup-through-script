@@ -38,17 +38,13 @@ export default connectDB;`,
 
   "server.js": `import app from "./app.js";
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT;
 if (!PORT) console.error("❌ Port is not specified in .env file");
 
 // Start server
 app.listen(PORT, () => {
   console.log(\`🚀 Server running on port http://localhost:\${PORT}\`);
 });`,
-
-  ".env": `PORT=4000
-MONGO_URI=mongodb://localhost:27017/
-JWT_SECRET=your_jwt_secret`,
 
   "app.js": `import express from "express";
 import "dotenv/config";
@@ -139,90 +135,87 @@ try {
 };
 
 // Function to create folders
-async function createFolders() {
+async function setupProjectFiles() {
   try {
     await fs.mkdir(srcPath, { recursive: true });
+
+    // Ensure all folders exist before creating files
     await Promise.all(
       folders.map((folder) =>
         fs.mkdir(path.join(srcPath, folder), { recursive: true })
       )
     );
-  } catch (err) {
-    console.error("❌ Error creating folders:", err);
-  }
-}
 
-// Function to create files
-async function createProjectFiles() {
-  try {
-    await createFolders();
+    // Now create files safely
     await Promise.all(
       Object.entries(files).map(([filePath, content]) =>
-        fs.writeFile(path.join(srcPath, filePath), content.trim())
+        fs.writeFile(path.join(srcPath, filePath), content.trim(), "utf8")
       )
     );
   } catch (err) {
-    console.error("❌ Error creating project files:", err);
+    console.error("❌ Error creating files or folders:", err);
   }
 }
 
 // Function to create package.json if not exists
-async function createGitIgnoreFile() {
+async function setupEnvAndGitIgnore() {
   const gitIgnorePath = path.join(projectPath, ".gitignore");
+  const envFilePath = path.join(projectPath, ".env");
+
+  const gitIgnoreContent = `.env
+node_modules`;
+
+  const envFileContent = `PORT=4000
+MONGO_URI=mongodb://localhost:27017/
+JWT_SECRET=your_jwt_secret`;
+
   try {
-    await fs.access(gitIgnorePath);
-  } catch {
-    console.log("📄 Creating .gitignore");
-    const gitIgnoreContent = `.env
-node_modules
-`;
-    await fs.writeFile(gitIgnorePath, gitIgnoreContent, "utf8");
+    await Promise.all([
+      fs
+        .writeFile(gitIgnorePath, gitIgnoreContent, { flag: "wx" })
+        .catch(() => {}),
+      fs.writeFile(envFilePath, envFileContent, { flag: "wx" }).catch(() => {}),
+    ]);
+  } catch (err) {
+    console.error("❌ Error creating .gitignore or .env file:", err);
   }
 }
 
-async function ensurePackageJson() {
+async function setupPackageJson() {
   const packageJsonPath = path.join(projectPath, "package.json");
+
   try {
-    await fs.access(packageJsonPath);
-  } catch {
-    console.log("📄 Creating package.json...");
-    await fs.writeFile(
-      packageJsonPath,
-      JSON.stringify(
-        {
-          name: path.basename(projectPath),
-          version: "1.0.0",
-          main: "server.js",
-          scripts: {
-            start: "node src/server.js",
-            dev: "nodemon src/server.js",
-          },
-          dependencies: {},
-          type: "module",
+    let packageJson;
+    try {
+      packageJson = JSON.parse(await fs.readFile(packageJsonPath, "utf8"));
+    } catch {
+      console.log("📄 Creating package.json...");
+      packageJson = {
+        name: path.basename(projectPath),
+        version: "1.0.0",
+        main: "server.js",
+        scripts: {
+          start: "node src/server.js",
+          dev: "nodemon src/server.js",
         },
-        null,
-        2
-      )
-    );
-  }
-}
+        dependencies: {},
+        type: "module",
+      };
+    }
 
-// Function to update package.json
-async function updatePackageJson() {
-  const packageJsonPath = path.join(projectPath, "package.json");
-  try {
-    const packageJson = JSON.parse(await fs.readFile(packageJsonPath, "utf8"));
-
-    packageJson.type = "module";
     packageJson.scripts = {
       ...packageJson.scripts,
       dev: "nodemon src/server.js",
       start: "node src/server.js",
     };
 
-    await fs.writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
+    await fs.writeFile(
+      packageJsonPath,
+      JSON.stringify(packageJson, null, 2),
+      "utf8"
+    );
   } catch (err) {
-    console.error("❌ Error updating package.json:", err);
+    console.error("❌ Error setting up package.json:", err);
   }
 }
 
@@ -233,13 +226,12 @@ async function installDependencies() {
     exec(
       `npm install express dotenv jsonwebtoken cors mongoose bcrypt cookie-parser nodemon`,
       { cwd: projectPath },
-      async (error) => {
+      (error) => {
         if (error) {
           console.error("❌ Error installing dependencies:", error.message);
           reject(new Error(error.message));
         } else {
           console.log("✅ Dependencies installed successfully!");
-          await updatePackageJson(); // Update package.json after dependencies are installed
           resolve();
         }
       }
@@ -256,19 +248,18 @@ async function setupProject() {
   );
 
   try {
-    if (!isCurrentDir) {
-      await fs.mkdir(projectPath, { recursive: true });
-    }
+    if (!isCurrentDir) await fs.mkdir(projectPath, { recursive: true });
 
-    await ensurePackageJson();
-    await createProjectFiles();
+    await Promise.all([
+      setupPackageJson(),
+      setupProjectFiles(),
+      setupEnvAndGitIgnore(),
+    ]);
     await installDependencies();
-    await createGitIgnoreFile();
 
-    console.log("\n🎉 Setup Complete! Run the following commands to start:\n");
+    console.log("\n🎉 Setup Complete! Run:\n");
     if (!isCurrentDir) console.log(`  cd ${projectName}`);
-    console.log("  npm start with Node\n");
-    console.log("  npm run dev with Nodemon\n");
+    console.log("  npm start (Node) or npm run dev (Nodemon)\n");
   } catch (err) {
     console.error("❌ Setup failed:", err);
   }
