@@ -1,0 +1,22 @@
+{
+  "name": "shiv-backend-setup",
+  "version": "1.0.12",
+  "description": "A CLI tool to generate a backend structure",
+  "main": "index.js",
+  "type": "module",
+  "bin": {
+    "shiv-backend-setup": "index.js"
+  },
+  "dependencies": {},
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "express",
+    "cli",
+    "backend",
+    "structure"
+  ],
+  "author": "Shiv",
+  "license": "MIT"
+}
