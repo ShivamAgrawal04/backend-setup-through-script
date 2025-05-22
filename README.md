@@ -45,7 +45,7 @@ project-name/
 ### **Step 1: Run the setup script**
 
 ```sh
-npx create-express-app project-name
+npx shiv-backend-setup project-name
 ```
 
 _Replace `project-name` with your desired project folder name._
